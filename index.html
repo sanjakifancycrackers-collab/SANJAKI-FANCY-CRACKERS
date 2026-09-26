@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sanjaki Fancy Crackers | Online Crackers Store</title>
+  <meta name="description" content="Shop Sanjaki Fancy Crackers online. Browse products, add to cart and place your order through WhatsApp.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="#"><span class="brand-mark">🎆</span><span>Sanjaki Fancy Crackers</span></a>
+    <nav>
+      <a href="#products">Products</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <button class="cart-button" onclick="openCart()">Cart <span id="cartCount">0</span></button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">Sivakasi • Tamil Nadu</span>
+      <h1>Celebrate brighter with Sanjaki Fancy Crackers.</h1>
+      <p>Browse our cracker collection, choose your quantities and send your order directly to WhatsApp.</p>
+      <a class="btn primary" href="#products">Shop Now</a>
+      <a class="btn secondary" href="#contact">Contact Us</a>
+    </div>
+    <div class="hero-card">
+      <div class="burst">✨</div>
+      <h3>Easy Online Ordering</h3>
+      <p>Add products to your cart and submit your order on WhatsApp.</p>
+      <strong>WhatsApp: 8838351188</strong>
+    </div>
+  </div>
+</section>
+
+<section id="products" class="section">
+  <div class="container">
+    <div class="section-heading">
+      <div><span class="eyebrow">Our collection</span><h2>Featured Crackers</h2></div>
+      <input id="search" class="search" type="search" placeholder="Search products..." oninput="renderProducts()">
+    </div>
+    <div id="categories" class="chips"></div>
+    <div id="productGrid" class="product-grid"></div>
+  </div>
+</section>
+
+<section id="about" class="section light">
+  <div class="container two-col">
+    <div><span class="eyebrow">About us</span><h2>Festive shopping made simple.</h2>
+      <p>Sanjaki Fancy Crackers brings a convenient way to browse your favourite crackers online and place your order from your phone or computer.</p>
+    </div>
+    <div class="info-box"><h3>Order in 3 steps</h3><ol><li>Select your products.</li><li>Review your cart.</li><li>Send the order through WhatsApp.</li></ol></div>
+  </div>
+</section>
+
+<section id="contact" class="section">
+  <div class="container contact-card">
+    <div><span class="eyebrow">Contact</span><h2>Ready to place an order?</h2><p>Send your cart directly to our WhatsApp number.</p></div>
+    <a class="btn primary" href="https://wa.me/918838351188" target="_blank" rel="noopener">WhatsApp: 8838351188</a>
+  </div>
+</section>
+
+<footer><div class="container footer"><span>© <span id="year"></span> Sanjaki Fancy Crackers</span><span>Online ordering • Sivakasi, Tamil Nadu</span></div></footer>
+
+<div id="cartOverlay" class="overlay" onclick="closeCart(event)">
+  <aside class="cart" onclick="event.stopPropagation()">
+    <div class="cart-head"><h2>Your Cart</h2><button onclick="closeCart()">×</button></div>
+    <div id="cartItems"></div>
+    <div class="cart-total"><span>Total</span><strong id="cartTotal">₹0</strong></div>
+    <label class="field">Customer name<input id="customerName" placeholder="Your name"></label>
+    <label class="field">Delivery / address<textarea id="customerAddress" rows="3" placeholder="Delivery address"></textarea></label>
+    <button class="btn primary full" onclick="sendWhatsAppOrder()">Send Order on WhatsApp</button>
+    <p class="small">Prices and availability can be edited in <code>products.js</code>.</p>
+  </aside>
+</div>
+<script src="products.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
