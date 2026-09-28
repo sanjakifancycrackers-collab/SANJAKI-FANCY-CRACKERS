@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SANJAKI FANCY CRACKERS, SIVAKASI - Online product catalogue and WhatsApp ordering.">
+<title>SANJAKI FANCY CRACKERS | SIVAKASI</title>
+<style>
+:root{--red:#991b1b;--red2:#b91c1c;--gold:#f59e0b;--green:#25d366;--bg:#fffaf5;--card:#fff;--border:#eadfd5;--muted:#6b7280}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#222}
+header{background:linear-gradient(135deg,#7f1d1d,#b91c1c 58%,#f59e0b);color:white;padding:28px 16px;text-align:center}
+header h1{margin:0;font-size:clamp(28px,6vw,48px)}
+header p{margin:7px 0;font-size:16px}
+.container{max-width:1200px;margin:auto;padding:18px 14px 35px}
+.notice{background:#fff3cd;border:1px solid #f2d38b;border-radius:12px;padding:12px 14px;margin-bottom:18px;font-size:14px}
+.controls{display:grid;grid-template-columns:1fr 220px;gap:10px;margin:12px 0}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d7c9bd;border-radius:9px;font-size:15px;background:white}
+h2{color:#7f1d1d;margin:20px 0 12px}
+.catalog{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:12px}
+.card{background:white;border:1px solid var(--border);border-radius:12px;padding:13px;box-shadow:0 2px 7px rgba(0,0,0,.04);display:flex;flex-direction:column}
+.cat{font-size:10px;color:#9a3412;font-weight:800;text-transform:uppercase;margin-bottom:6px}
+.name{font-weight:700;line-height:1.35;min-height:42px}
+.price{font-size:19px;color:var(--red);font-weight:800;margin-top:7px}
+.per{font-size:12px;color:var(--muted);margin:2px 0 10px}
+.add{background:var(--red2);color:white;border:0;border-radius:8px;padding:10px;cursor:pointer;font-weight:700;margin-top:auto}
+.add:hover{background:#7f1d1d}
+.cart{position:sticky;bottom:10px;background:#171717;color:white;border-radius:14px;padding:14px;margin-top:24px;box-shadow:0 8px 25px rgba(0,0,0,.2);z-index:5}
+.carttop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.carttop strong{font-size:18px}
+.cartbtn{background:var(--gold);color:#111;border:0;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer}
+.cartitems{display:none;background:white;color:#222;border-radius:10px;padding:10px;margin-top:10px;max-height:330px;overflow:auto}
+.cartitems.open{display:block}
+.cartrow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:9px 0}
+.qty{display:flex;align-items:center;gap:5px}
+.qty button{width:28px;height:28px;border:1px solid #ccc;background:#f5f5f5;border-radius:6px;cursor:pointer}
+.remove{color:#b91c1c;border:0;background:transparent;cursor:pointer}
+.total{text-align:right;font-size:18px;font-weight:800;padding:12px 0}
+.checkout{display:none;background:white;color:#222;border:1px solid var(--border);border-radius:14px;padding:18px;margin-top:18px}
+.checkout.open{display:block}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.full{grid-column:1/-1}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button.primary{background:var(--green);color:white;border:0;border-radius:9px;padding:13px 18px;font-weight:800;cursor:pointer}
+button.secondary{background:#7f1d1d;color:white;border:0;border-radius:9px;padding:13px 18px;font-weight:800;cursor:pointer}
+.small{font-size:12px;color:var(--muted);margin-top:8px}
+footer{background:#171717;color:#ddd;text-align:center;padding:22px 14px}
+.empty{padding:15px;text-align:center;color:var(--muted)}
+@media(max-width:700px){.controls,.formgrid{grid-template-columns:1fr}.catalog{grid-template-columns:1fr 1fr}.cartrow{grid-template-columns:1fr auto auto}.cartrow .lineTotal{grid-column:2/-1;text-align:right}}
+@media(max-width:470px){.catalog{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>SANJAKI FANCY CRACKERS</h1>
+<p>SIVAKASI • Online Product Catalogue & Ordering</p>
+<p>WhatsApp Orders: <strong>8838351188</strong></p>
+</header>
+
+<main class="container">
+<div class="notice"><strong>How to order:</strong> Select products → Add to Cart → adjust quantities → enter customer details → Send Order on WhatsApp. Prices are from the supplied price list and should be confirmed before purchase.</div>
+
+<h2>Shop Products</h2>
+<div class="controls">
+<input id="search" type="search" placeholder="Search products..." oninput="renderProducts()">
+<select id="category" onchange="renderProducts()"><option value="">All Categories</option></select>
+</div>
+<div id="count" class="small"></div>
+<div id="catalog" class="catalog"></div>
+
+<section class="cart" id="cartBox">
+<div class="carttop">
+<strong>🛒 Cart: <span id="cartCount">0</span> items</strong>
+<button class="cartbtn" onclick="toggleCart()">View Cart</button>
+</div>
+<div id="cartItems" class="cartitems"></div>
+<div class="total">Cart Total: ₹<span id="cartTotal">0.00</span></div>
+</section>
+
+<section class="checkout" id="checkout">
+<h2>Customer Details</h2>
+<div class="formgrid">
+<div><label><strong>Customer Name *</strong></label><input id="customerName" placeholder="Enter your name"></div>
+<div><label><strong>Mobile Number *</strong></label><input id="customerPhone" inputmode="tel" placeholder="10-digit mobile number"></div>
+<div class="full"><label><strong>Delivery / Contact Address *</strong></label><textarea id="customerAddress" rows="3" placeholder="Enter complete address"></textarea></div>
+<div class="full"><label><strong>Order Notes</strong></label><textarea id="orderNotes" rows="2" placeholder="Any delivery or product notes"></textarea></div>
+</div>
+<div class="actions">
+<button class="primary" onclick="sendOrder()">📲 Send Order via WhatsApp</button>
+<button class="secondary" onclick="closeCheckout()">Back to Cart</button>
+</div>
+<div class="small">Your selected products and customer details will be placed into a WhatsApp message to 8838351188. No online payment is collected on this page.</div>
+</section>
+</main>
+
+<footer><strong>SANJAKI FANCY CRACKERS, SIVAKASI</strong><br>WhatsApp: 8838351188</footer>
+
+<script>
+const products = [
+{id:1,name:'LAKSHMI',price:17.0,per:'1 Pkt',category:'ONE SOUND CRACKERS'},
+{id:2,name:'4" LAKSHMI',price:25.0,per:'1 Pkt',category:'ONE SOUND CRACKERS'},
+{id:3,name:'4" DELUXE LAKSHMI',price:30.0,per:'1 Pkt',category:'ONE SOUND CRACKERS'},
+{id:4,name:'4" DLX. GOLD LAKSHMI',price:35.0,per:'1 Pkt',category:'ONE SOUND CRACKERS'},
+{id:5,name:'5" LAKSHMI',price:48.0,per:'1 Pkt',category:'ONE SOUND CRACKERS'},
+{id:6,name:'8" LAKSHMI',price:60.0,per:'1 Pkt',category:'ONE SOUND CRACKERS'},
+{id:7,name:'12” COLOUR RIDER',price:88.0,per:'1 Pkt',category:'ONE SOUND CRACKERS'},
+{id:8,name:'2 1/2" KURUVI',price:12.0,per:'1 Pkt',category:'ONE SOUND CRACKERS'},
+{id:9,name:'MINI BULLET',price:26.0,per:'1 Box',category:'BOMB'},
+{id:10,name:'MEGA BULLET',price:60.0,per:'1 Box',category:'BOMB'},
+{id:11,name:'HYDRO BOMB',price:72.0,per:'1 Box',category:'BOMB'},
+{id:12,name:'KING OF KING BOMB',price:95.0,per:'1 Box',category:'BOMB'},
+{id:13,name:'CLASSIC BOMB',price:120.0,per:'1 Box',category:'BOMB'},
+{id:14,name:'AGNI BOMB',price:190.0,per:'1 Box',category:'BOMB'},
+{id:15,name:'DIGITAL BOMB',price:200.0,per:'1 Box',category:'BOMB'},
+{id:16,name:'1/4 KG PAPER BOMB',price:55.0,per:'1 Box',category:'PAPER BOMB'},
+{id:17,name:'1/2 KG PAPER BOMB',price:110.0,per:'1 Box',category:'PAPER BOMB'},
+{id:18,name:'1 KG PAPER BOMB',price:200.0,per:'1 Box',category:'PAPER BOMB'},
+{id:19,name:'RED BIJI (GOLD BAG)',price:38.0,per:'1 Pkt',category:'BIJILI VEDI'},
+{id:20,name:'STRIPPED BIJILI (GOLD BAG)',price:43.0,per:'1 Pkt',category:'BIJILI VEDI'},
+{id:21,name:'28 CHORSA',price:20.0,per:'1 Pkt',category:'DELUXE CRACKERS'},
+{id:22,name:'28 GIANT',price:30.0,per:'1 Pkt',category:'DELUXE CRACKERS'},
+{id:23,name:'56 GIANT',price:55.0,per:'1 Pkt',category:'DELUXE CRACKERS'},
+{id:24,name:'24 DELUXE',price:45.0,per:'1 Pkt',category:'DELUXE CRACKERS'},
+{id:25,name:'50 DELUXE',price:90.0,per:'1 Pkt',category:'DELUXE CRACKERS'},
+{id:26,name:'100 DELUXE',price:200.0,per:'1 Pkt',category:'DELUXE CRACKERS'},
+{id:27,name:'100 WALA',price:42.0,per:'1 Pkt',category:'WALA'},
+{id:28,name:'200 WALA',price:84.0,per:'1 Pkt',category:'WALA'},
+{id:29,name:'1 K (HALF)',price:250.0,per:'1 Box',category:'WALA'},
+{id:30,name:'1K (FULL)',price:320.0,per:'1 Box',category:'WALA'},
+{id:31,name:'1K (FULL TAJMAHAL)',price:400.0,per:'1 Box',category:'WALA'},
+{id:32,name:'2K WALA',price:800.0,per:'1 Box',category:'WALA'},
+{id:33,name:'5K WALA (WONDERLA)',price:1750.0,per:'1 Box',category:'WALA'},
+{id:34,name:'5K WALA (RED BULL)',price:2150.0,per:'1 Box',category:'WALA'},
+{id:35,name:'10K WALA (TIGER',price:2900.0,per:'1 Box',category:'WALA'},
+{id:36,name:'10K WALA (RED GIANT)',price:3700.0,per:'1 Box',category:'WALA'},
+{id:37,name:'FLOWER POTS GREEN',price:58.0,per:'1 Box',category:'FLOWER POTS'},
+{id:38,name:'FLOWER POTS SPECIAL',price:82.0,per:'1 Box',category:'FLOWER POTS'},
+{id:39,name:'FLOWER POTS ASHOKA',price:110.0,per:'1 Box',category:'FLOWER POTS'},
+{id:40,name:'FLOWER POTS DELUXE',price:185.0,per:'1 Box',category:'FLOWER POTS'},
+{id:41,name:'FLOWER POTS MEGA DELUXE',price:115.0,per:'1 Box',category:'FLOWER POTS'},
+{id:42,name:'COLOUR KOTI',price:190.0,per:'1 Box',category:'FLOWER POTS'},
+{id:43,name:'COLOUR KOTI DELUXE',price:380.0,per:'1 Box',category:'FLOWER POTS'},
+{id:44,name:'CHOTTA TRI COLOUR',price:175.0,per:'1 Box',category:'SPL FLOWER POTS'},
+{id:45,name:'MEGA TRI COLOUR',price:230.0,per:'1 Box',category:'SPL FLOWER POTS'},
+{id:46,name:'BADA TRI COLOUR',price:245.0,per:'1 Box',category:'SPL FLOWER POTS'},
+{id:47,name:'MAMA BISKOTHU',price:370.0,per:'1 Box',category:'SPL FLOWER POTS'},
+{id:48,name:'DUBUKU',price:630.0,per:'1 Box',category:'SPL FLOWER POTS'},
+{id:49,name:'GROUND CHAKKAR BIG',price:42.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:50,name:'GROUND CHAKKAR SPECIAL',price:90.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:51,name:'GROUND CHAKKAR DELUXE',price:125.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:52,name:'SPINNER SPL.',price:145.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:53,name:'SPINNER DLX.',price:180.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:54,name:'WHISTLE DIXIE',price:130.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:55,name:'DISCO WHEEL',price:115.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:56,name:'RING RING',price:250.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:57,name:'CRACK JACK',price:270.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:58,name:'WIRE CHAKKAR',price:190.0,per:'1 Box',category:'GROUND CHAKKARS'},
+{id:59,name:'1/2’ TWINKLING STAR',price:35.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:60,name:'4’ TWINKLING STAR',price:65.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:61,name:'KIT KAT',price:40.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:62,name:'PIM POM',price:75.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:63,name:'BUTTERFLY',price:100.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:64,name:'SPINNER',price:110.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:65,name:'HELICOPTER',price:120.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:66,name:'PHOTO FLASH',price:60.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:67,name:'COLOUR SMOKE',price:170.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:68,name:'MONEY BANK',price:145.0,per:'1 Box',category:'TWINKLING STAR'},
+{id:69,name:'MINI SIREN',price:180.0,per:'1 Box',category:'SOUND DAMAKKA'},
+{id:70,name:'MEGA SIREN',price:230.0,per:'1 Box',category:'SOUND DAMAKKA'},
+{id:71,name:'MERY MERY (GO)',price:340.0,per:'1 Box',category:'SOUND DAMAKKA'},
+{id:72,name:'SMALL PEACOCK',price:155.0,per:'1 Box',category:'PEACOCK'},
+{id:73,name:'BIG PEACOCK',price:195.0,per:'1 Box',category:'PEACOCK'},
+{id:74,name:'BADA PEACOCK (KING)',price:450.0,per:'1 Box',category:'PEACOCK'},
+{id:75,name:'MAGIC PEACOCK (SUNFEAST)',price:600.0,per:'1 Box',category:'PEACOCK'},
+{id:76,name:'DISCO SHOWER',price:140.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:77,name:'PEACOCK FEATHER',price:125.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:78,name:'GOLD RAIN',price:130.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:79,name:'GOLD FEAST',price:210.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:80,name:'SUN FEAST',price:220.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:81,name:'TWEET BIRD',price:220.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:82,name:'DEXTER',price:240.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:83,name:'SUN LIGHT/MOON',price:125.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:84,name:'POGO',price:240.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:85,name:'ANGRY BIRD',price:350.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:86,name:'LOOK UP',price:250.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:87,name:'TRAFFIC LIGHT',price:180.0,per:'1 Box',category:'FOUNTAIN SERIES'},
+{id:88,name:'TIN BEAR',price:90.0,per:'1 Tin',category:'CRACKLING TIN'},
+{id:89,name:'3\'\' TIN',price:135.0,per:'1 Tin',category:'CRACKLING TIN'},
+{id:90,name:'6\'\' TIN',price:220.0,per:'1 Tin',category:'CRACKLING TIN'},
+{id:91,name:'BAD BOY',price:550.0,per:'1 Box',category:'CRACKLING TIN'},
+{id:92,name:'INFINITY STAR',price:550.0,per:'1 Box',category:'CRACKLING TIN'},
+{id:93,name:'ULTRA SOUND',price:350.0,per:'1 Box',category:'CRACKLING TIN'},
+{id:94,name:'JUNGLE',price:290.0,per:'1 Box',category:'CRACKLING TIN'},
+{id:95,name:'KING CRACKLING',price:250.0,per:'1 Box',category:'CRACKLING TIN'},
+{id:96,name:'ONCE MORE',price:300.0,per:'1 Box',category:'CRACKLING TIN'},
+{id:97,name:'SELFIE STICK',price:65.0,per:'1 Box',category:'COLOUR PENCIL'},
+{id:98,name:'LA-LA CANDLE',price:215.0,per:'1 Box',category:'COLOUR PENCIL'},
+{id:99,name:'FUN STICKS',price:390.0,per:'1 Box',category:'COLOUR PENCIL'},
+{id:100,name:'FREE FIRE',price:300.0,per:'1 Box',category:'COLOUR PENCIL'},
+{id:101,name:'VEL CANDLE',price:300.0,per:'1 Box',category:'COLOUR PENCIL'},
+{id:102,name:'I-CONE',price:250.0,per:'1 Box',category:'COLOUR PENCIL'},
+{id:103,name:'7 SHOTS (RAINY)',price:150.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:104,name:'12 SHOTS (BINGO)',price:220.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:105,name:'15 SHOTS MULTI COLOUR',price:350.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:106,name:'30 SHOTS MULTI COLOUR',price:460.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:107,name:'30 SHOTS (TRI COLOUR)',price:500.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:108,name:'60 SHOTS (TILO)',price:950.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:109,name:'60 SHOTS MULTI COLOUR',price:1080.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:110,name:'120 SHOTS MULTI COLOUR',price:1850.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:111,name:'240 SHOTS MULTI SHOWER',price:3600.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:112,name:'10 X 10 SHOT',price:4200.0,per:'1 Box',category:'REPEATING SHOTS'},
+{id:113,name:'ALL STAR ROBO (5 PCS)',price:280.0,per:'1 Box',category:'FANCY SERIES'},
+{id:114,name:'CHOTTA FANCY (1 PCS)',price:60.0,per:'1 Box',category:'FANCY SERIES'},
+{id:115,name:'2 1/2\'\' FANCY (1 PCS)',price:110.0,per:'1 Box',category:'FANCY SERIES'},
+{id:116,name:'3 1/2" FANCY (1 PCS)',price:290.0,per:'1 Box',category:'FANCY SERIES'},
+{id:117,name:'3 1/2" FANCY RAIN FALL (1 PCS)',price:400.0,per:'1 Box',category:'FANCY SERIES'},
+{id:118,name:'3 1/2" FANCY NAYAGARA (1 PCS)',price:380.0,per:'1 Box',category:'FANCY SERIES'},
+{id:119,name:'3 1/2" SIZZLING / CRACKLING',price:435.0,per:'1 Box',category:'FANCY SERIES'},
+{id:120,name:'5" FANCY (1 PCS) SPRING',price:450.0,per:'1 Box',category:'FANCY SERIES'},
+{id:121,name:'6" FANCY (1 PCS) Hi-LIGHT',price:900.0,per:'1 Box',category:'FANCY SERIES'},
+{id:122,name:'2" FANCY (3 PCS)',price:280.0,per:'1 Box',category:'COMBO FANCY SERIES'},
+{id:123,name:'2 1/2" FANCY 3 COLOUR (3 PCS)',price:450.0,per:'1 Box',category:'COMBO FANCY SERIES'},
+{id:124,name:'3 1/2" FANCY (2 PCS) 2 COLOUR',price:620.0,per:'1 Box',category:'COMBO FANCY SERIES'},
+{id:125,name:'5" FANCY (2 PCS) MULTI',price:950.0,per:'1 Box',category:'COMBO FANCY SERIES'},
+{id:126,name:'6" FANCY (2 PCS) MULTI',price:1350.0,per:'1 Box',category:'COMBO FANCY SERIES'},
+{id:127,name:'6" FANCY (3 PCS) JUMBO',price:1550.0,per:'1 Box',category:'COMBO FANCY SERIES'},
+{id:128,name:'10 cm ELECTRIC SPARKLERS',price:20.0,per:'1 Box',category:'SPARKLERS'},
+{id:129,name:'10 cm COLOUR SPARKLERS',price:22.0,per:'1 Box',category:'SPARKLERS'},
+{id:130,name:'10 cm GREEN SPARKLERS',price:24.0,per:'1 Box',category:'SPARKLERS'},
+{id:131,name:'10 cm RED SPARKLERS',price:26.0,per:'1 Box',category:'SPARKLERS'},
+{id:132,name:'15 cm ELECTRIC SPARKLERS',price:42.0,per:'1 Box',category:'SPARKLERS'},
+{id:133,name:'15 cm COLOUR SPARKLERS',price:44.0,per:'1 Box',category:'SPARKLERS'},
+{id:134,name:'15 cm GREEN SPARKLERS',price:48.0,per:'1 Box',category:'SPARKLERS'},
+{id:135,name:'15 cm RED SPARKLERS',price:52.0,per:'1 Box',category:'SPARKLERS'},
+{id:136,name:'30 cm ELECTRIC SPARKLERS',price:42.0,per:'1 Box',category:'SPARKLERS'},
+{id:137,name:'30 cm COLOUR SPARKLERS',price:44.0,per:'1 Box',category:'SPARKLERS'},
+{id:138,name:'30 cm GREEN SPARKLERS',price:48.0,per:'1 Box',category:'SPARKLERS'},
+{id:139,name:'30 cm RED SPARKLERS',price:52.0,per:'1 Box',category:'SPARKLERS'},
+{id:140,name:'50 cm ELECTRIC SPARKLERS',price:210.0,per:'1 Box',category:'SPARKLERS'},
+{id:141,name:'50 cm COLOUR SPARKLERS',price:250.0,per:'1 Box',category:'SPARKLERS'},
+{id:142,name:'ROTATING SPARKLERS',price:265.0,per:'1 Box',category:'SPARKLERS'},
+{id:143,name:'DOUBLE DEKKER',price:210.0,per:'1 Box',category:'SPARKLERS'},
+{id:144,name:'BLOOMS',price:120.0,per:'1 Box',category:'COLOUR MATCHES'},
+{id:145,name:'LAPTOP (10 PCS)',price:280.0,per:'1 Box',category:'COLOUR MATCHES'},
+{id:146,name:'KURUNJI (21 ITEMS)',price:350.0,per:'1 Box',category:'GIFT BOX'},
+{id:147,name:'MULLLAI (30 ITEMS)',price:450.0,per:'1 Box',category:'GIFT BOX'},
+{id:148,name:'MARUDHAM (35 ITEMS)',price:500.0,per:'1 Box',category:'GIFT BOX'},
+{id:149,name:'NEITHAL (40 ITEMS)',price:650.0,per:'1 Box',category:'GIFT BOX'},
+{id:150,name:'PAALAI (51 ITEMS)',price:850.0,per:'1 Box',category:'GIFT BOX'}
+];
+
+let cart = JSON.parse(localStorage.getItem('sanjakiCart') || '{}');
+
+const categorySelect = document.getElementById('category');
+[...new Set(products.map(p=>p.category))].forEach(c=>{
+  const o=document.createElement('option'); o.value=c; o.textContent=c; categorySelect.appendChild(o);
+});
+
+function money(n){return n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function saveCart(){localStorage.setItem('sanjakiCart',JSON.stringify(cart));}
+
+function renderProducts(){
+ const q=document.getElementById('search').value.toLowerCase().trim();
+ const cat=categorySelect.value;
+ const list=products.filter(p=>(!q||(p.name+' '+p.category).toLowerCase().includes(q))&&(!cat||p.category===cat));
+ document.getElementById('count').textContent=list.length+' products shown';
+ document.getElementById('catalog').innerHTML=list.map(p=>`
+ <article class="card">
+  <div class="cat">${esc(p.category)}</div>
+  <div class="name">${esc(p.name)}</div>
+  <div class="price">₹${money(p.price)}</div>
+  <div class="per">${esc(p.per)}</div>
+  <button class="add" onclick="addToCart(${p.id})">+ Add to Cart</button>
+ </article>`).join('');
+}
+
+function addToCart(id){cart[id]=(cart[id]||0)+1;saveCart();renderCart();}
+function changeQty(id,delta){cart[id]=(cart[id]||0)+delta;if(cart[id]<=0)delete cart[id];saveCart();renderCart();}
+function removeItem(id){delete cart[id];saveCart();renderCart();}
+
+function renderCart(){
+ let ids=Object.keys(cart);
+ let total=0,count=0;
+ const box=document.getElementById('cartItems');
+ if(!ids.length) box.innerHTML='<div class="empty">Your cart is empty. Add products above.</div>';
+ else box.innerHTML=ids.map(id=>{
+   const p=products.find(x=>x.id==id), qty=cart[id], line=p.price*qty;
+   total+=line; count+=qty;
+   return `<div class="cartrow">
+    <div><strong>${esc(p.name)}</strong><div class="small">${esc(p.per)} • ₹${money(p.price)} each</div></div>
+    <div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><strong>${qty}</strong><button onclick="changeQty(${p.id},1)">+</button></div>
+    <button class="remove" onclick="removeItem(${p.id})">Remove</button>
+    <div class="lineTotal"><strong>₹${money(line)}</strong></div>
+   </div>`;
+ }).join('');
+ document.getElementById('cartCount').textContent=count;
+ document.getElementById('cartTotal').textContent=money(total);
+}
+function toggleCart(){
+ document.getElementById('cartItems').classList.toggle('open');
+ if(Object.keys(cart).length) document.getElementById('checkout').classList.add('open');
+}
+function closeCheckout(){document.getElementById('checkout').classList.remove('open');}
+
+function sendOrder(){
+ const ids=Object.keys(cart);
+ if(!ids.length){alert('Your cart is empty. Please add products first.');return;}
+ const name=document.getElementById('customerName').value.trim();
+ const phone=document.getElementById('customerPhone').value.trim();
+ const address=document.getElementById('customerAddress').value.trim();
+ const notes=document.getElementById('orderNotes').value.trim();
+ if(!name||!phone||!address){alert('Please fill Customer Name, Mobile Number and Address.');return;}
+ let total=0, lines=[];
+ ids.forEach(id=>{
+   const p=products.find(x=>x.id==id), qty=cart[id], line=p.price*qty; total+=line;
+   lines.push(`${p.name} | Qty: ${qty} | ${p.per} | ₹${money(line)}`);
+ });
+ const text=`SANJAKI FANCY CRACKERS - NEW ORDER
+
+CUSTOMER DETAILS
+Name: ${name}
+Mobile: ${phone}
+Address: ${address}
+
+ORDER ITEMS
+${lines.join('\n')}
+
+TOTAL: ₹${money(total)}
+Notes: ${notes||'None'}
+
+Please confirm availability, final bill and delivery details.`;
+ window.open('https://wa.me/918838351188?text='+encodeURIComponent(text),'_blank');
+}
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+renderProducts();renderCart();
+</script>
+</body>
+</html>
